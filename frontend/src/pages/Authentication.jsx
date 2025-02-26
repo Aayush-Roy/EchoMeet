@@ -13,6 +13,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Snackbar } from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import LoginIcon from "@mui/icons-material/Login";
+import { Header } from "./Header";
 
 const theme = createTheme({
   palette: {
@@ -49,6 +50,8 @@ export default function Authentication() {
   };
 
   return (
+    <>
+    
     <ThemeProvider theme={theme}>
       <Grid container component="main" sx={{ height: "100vh" }}>
         <CssBaseline />
@@ -83,7 +86,7 @@ export default function Authentication() {
               flexDirection: "column",
               alignItems: "center",
               borderRadius: 2,
-              boxShadow: 3,
+              // boxShadow: 3,
             }}
           >
             <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
@@ -169,6 +172,8 @@ export default function Authentication() {
               >
                 {formState === 0 ? "Login" : "Register"}
               </Button>
+
+              
             </Box>
           </Box>
         </Grid>
@@ -176,5 +181,6 @@ export default function Authentication() {
 
       <Snackbar open={open} autoHideDuration={4000} message={message} />
     </ThemeProvider>
+    </>
   );
 }

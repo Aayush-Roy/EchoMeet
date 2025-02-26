@@ -16,10 +16,13 @@
     "@mui/material": "^6.4.5",
     "@shadcn/ui": "^0.0.4",
     "@tailwindcss/vite": "^4.0.8",
+    "axios": "^1.7.9",
     "framer-motion": "^12.4.7",
+    "http-status": "^2.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.2.0"
+    "react-router-dom": "^7.2.0",
+    "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
