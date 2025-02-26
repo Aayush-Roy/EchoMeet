@@ -7,10 +7,10 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen bg-gray-50 p-2">
       <Header />
-      <div className="container mx-auto flex flex-col md:flex-row items-center justify-between text-center md:text-left py-20 px-6">
+      <div className="container mx-auto flex flex-col md:flex-row items-center justify-between  text-center md:text-left py-20 px-6">
         
         {/* Left: Text Section */}
-        <div className="md:w-1/2 mb-8 md:mb-0">
+        <div className="md:w-1/3 mb-8 md:mb-0">
           <motion.h1 
             className="text-5xl font-extrabold text-gray-800 mb-6"
             initial={{ opacity: 0, y: -50 }}
@@ -36,7 +36,7 @@ const LandingPage = () => {
           <img 
             src={videoAppImage}
             alt="Video Calling App" 
-            className="w-full max-w-md rounded-lg shadow-lg"
+            className="w-full  rounded-lg shadow-lg"
           />
         </div>
 

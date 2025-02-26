@@ -14,6 +14,7 @@ import { Snackbar } from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import LoginIcon from "@mui/icons-material/Login";
 import { Header } from "./Header";
+import { AuthContext } from "../contexts/AuthContext";
 
 const theme = createTheme({
   palette: {
@@ -26,10 +27,12 @@ export default function Authentication() {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [name, setName] = React.useState("");
-  const [error, setError] = React.useState("");
+  const [error, setError] = React.useState(""); 
   const [message, setMessage] = React.useState("");
   const [formState, setFormState] = React.useState(0);
   const [open, setOpen] = React.useState(false);
+  const { handleRegister, handleLogin } = React.useContext(AuthContext);
+
 
   let handleAuth = async () => {
     try {
@@ -45,6 +48,7 @@ export default function Authentication() {
         setPassword("");
       }
     } catch (err) {
+      console.log(err);
       setError(err.response?.data?.message || "An error occurred");
     }
   };
