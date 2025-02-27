@@ -68,9 +68,47 @@ const getPermission =async()=>{
   }
 }
 
+  
+
   useEffect(()=>{
     getPermission();
   },[])
+
+  let getMedia = ()=>{
+    setVideo(videoAvailable);
+    setAudio(audioAvailable);
+    // connectToSocketServer();
+  }
+
+  let getUserMediaSuccess =()=>{
+
+  }
+
+  let getUserMedia =()=>{
+    if((video && videoAvailable)||(audio && audioAvailable)){
+      navigator.mediaDevices.getUserMedia({video:video,audio:audio})
+      .then(getUserMediaSuccess)
+      .then((stream)=>{})
+      .catch((e)=>console.log(e));
+    }else{
+      try{
+        let tracks = localVideoRef.current.srcObject.getTracks();
+        tracks.forEach((track)=>track.stop());
+      }catch(e){}
+    }
+  }
+
+  useEffect(()=>{
+    if(video!==undefined && audio!==undefined){
+      getUserMedia();
+    }
+  },[audio,video])
+
+  let connect = ()=>{
+    setAskForUsername(false);
+    getMedia(); 
+  }
+
   return (
     <div>
       {askForUsername === true ? 
@@ -78,7 +116,7 @@ const getPermission =async()=>{
         <h2>Enter Into Lobby</h2>
         {username}
         <TextField id='outlined-basic' label="Username" value={username} onChange={e=>setUsername(e.target.value)}/>
-          <Button variant='contained'>Connect</Button>
+          <Button variant='contained' onClick={connect} >Connect</Button>
 
         <div>
           <video ref={localVideoRef} autoPlay muted></video>
