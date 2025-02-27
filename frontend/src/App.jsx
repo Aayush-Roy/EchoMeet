@@ -4,6 +4,7 @@ import LandingPage from './pages/LandingPage';
 import Authentication from './pages/Authentication.jsx';
 import { AuthProvider } from './contexts/AuthContext.jsx';
 import Home from './pages/Home.jsx';
+import VideoMeet from './pages/VideoMeet.jsx';
 const App = () => {
   return (
     <div className=''>
@@ -13,6 +14,7 @@ const App = () => {
           <Route path='/home' element={<Home/>} />
           <Route path='/' element={<LandingPage/>} />
           <Route path='/auth' element={<Authentication/>} />
+          <Route path='/:url' element={<VideoMeet/>} />
         </Routes>
         </AuthProvider>
       </Router>
