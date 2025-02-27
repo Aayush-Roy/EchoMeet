@@ -45,9 +45,26 @@ const getPermission =async()=>{
         setAudioAvailable(false);
       }
 
+      if(navigator.mediaDevices.getDisplayMedia){
+        setScreenAvailable(true);
+      }else{
+        setScreenAvailable(false);
+      }
 
-  }catch{
+      if(videoAvailable || audioAvailable){
+        const userMediaStream = await navigator.mediaDevices.getUserMedia({video:videoAvailable, audio:audioAvailable});
+        if(userMediaStream){
+          window.localStream = userMediaStream;
+          if(localVideoRef.current){
+            localVideoRef.current.srcObject = userMediaStream;
+          }
+        }
+      }
 
+      
+
+  }catch(err){
+    console.log(err);
   }
 }
 
