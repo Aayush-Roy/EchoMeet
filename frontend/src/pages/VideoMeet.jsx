@@ -1,6 +1,8 @@
 import { Button, Input, TextField } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react'
-const server_url = 'http://localhost:8000';
+import { io } from "socket.io-client";
+
+const server_url = 'http://localhost:8080';
 let connections = {};
 
 const peerConfigConnections = {
@@ -72,13 +74,15 @@ const getPermission =async()=>{
 
   useEffect(()=>{
     getPermission();
-  },[])
+  },)
 
   let getMedia = ()=>{
     setVideo(videoAvailable);
     setAudio(audioAvailable);
-    // connectToSocketServer();
+    connectToSocketServer();
   }
+
+
 
   let getUserMediaSuccess =()=>{
 
@@ -103,6 +107,83 @@ const getPermission =async()=>{
       getUserMedia();
     }
   },[audio,video])
+  let gotMessagesFromServer =()=>{
+
+  }
+
+  let addMessage =()=>{
+
+  }
+  let connectToSocketServer =()=>{
+    socketRef.current = io.connect(server_url,{secure:false});
+
+      // socketRef.current = io(server_url, { transports: ["websocket", "polling"] });
+    socketRef.current.on("signal",gotMessageFromServer);
+    socketRef.current.on("connect",()=>{
+      socketRef.current.emit("join-call",window.location.href);
+      socketIdRef.current = socketRef.current.id;
+      socketRef.current.on("chat-message",addMessage);
+      socketIdRef.current.on("user-left",(id)=>{
+         setVideos((videos)=>videos.filter((video)=>video.socketId!==id));
+         socketIdRef.current.on("user-joines",(id,clients)=>{
+          clients.forEach((socketListId)=>{
+            connections[socketListId] = new RTCPeerConnection(peerConfigConnections);
+            connections[socketListId].onicecandidate=(event)=>{
+              if(event.candidate!==null){
+                socketRef.current.emit("signal",socketListId,JSON.stringify({'ice':event.candidate}))
+              }
+            } 
+            connections[socketListId].onaddstream=(event)=>{
+              let videoExists = videoRef.current.find(video=>video.socketId === socketListId);
+              if(videoExists){
+                setVideos(videos=>{
+                  const updateVideos = videos.map(video=>video.socketId === socketListId ? {...video,stream:event.stream}:video);
+                  videoRef.current = updateVideos;
+                  return updateVideos;
+                })
+              }else{
+                let newVideo = {
+                  socketId: socketListId,
+                  stream: event.stream,
+                  autoPlay:true,
+                  playsinline: true
+                }
+                setVideos(videos=>{
+                  const updatedVideos =[...video,newVideo];
+                  videoRef.current = updatedVideos;
+                  return updatedVideos;
+                }); 
+              }
+            };
+
+            if(window.localStream!==undefined && window.localStream!==null){
+              connections[socketListId].addStream(window.localStream);
+            }else{
+              // let blackSilence = 
+            }
+          })
+
+          if(id===socketIdRef.current){
+            for(let id2 in connections){
+              if(id2 === socketIdRef.current) continue;
+              try{
+                connections[id2].addStream(window.localStream)
+              }catch(e){
+                connections[id2].createOffer().then((description)=>{
+                  connections[id2].setLocalDescription(description).then(()=>{
+                    socketRef.current.emit("signal",id2,JSON.stringify({'sdp':connections[id2].LocalDescription}));
+                  })
+                 
+                })
+              }
+            }
+          }
+
+         })
+      })
+    })
+  
+  }
 
   let connect = ()=>{
     setAskForUsername(false);
@@ -114,7 +195,7 @@ const getPermission =async()=>{
       {askForUsername === true ? 
       <div>
         <h2>Enter Into Lobby</h2>
-        {username}
+       
         <TextField id='outlined-basic' label="Username" value={username} onChange={e=>setUsername(e.target.value)}/>
           <Button variant='contained' onClick={connect} >Connect</Button>
 
